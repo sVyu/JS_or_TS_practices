@@ -1,3 +1,6 @@
+const saveBtn = document.getElementById("save");
+const textInput = document.getElementById("text");
+const fileInput = document.getElementById("file")
 const modeBtn = document.getElementById("mode-btn");
 const destoryBtn = document.getElementById("destroy-btn");
 const eraserBtn = document.getElementById("eraser-btn");
@@ -16,6 +19,7 @@ const CANVAS_HEIGHT = 600;
 canvas.width = CANVAS_WIDTH;
 canvas.height = CANVAS_HEIGHT;
 ctx.lineWidth = lineWidth.value;
+ctx.lineCap = "round"; // F12
 
 const colors = [
     "#cd84f1",
@@ -49,8 +53,8 @@ const colors = [
 let isPainting = false;
 let isFilling = false;
 
-function onMove(event){
-    if(isPainting){
+function onMove(event) {
+    if (isPainting) {
         ctx.lineTo(event.offsetX, event.offsetY);
         ctx.stroke();
         return;
@@ -59,26 +63,26 @@ function onMove(event){
     ctx.moveTo(event.offsetX, event.offsetY);
 }
 
-function startPainting(){
+function startPainting() {
     isPainting = true;
 }
 
-function cancelPainting(){
+function cancelPainting() {
     isPainting = false;
 }
 
-function onLineWidthChange(event){
+function onLineWidthChange(event) {
     // console.log(event.target.value);
     ctx.lineWidth = event.target.value;
 }
 
-function onColorChange(event){
+function onColorChange(event) {
     // console.log(event.target.value);
     ctx.strokeStyle = event.target.value;
     ctx.fillStyle = event.target.value;
 }
 
-function onColorClick(event){
+function onColorClick(event) {
     // console.log(event.target);
     // console.dir(event.target.dataset.color);
     const colorValue = event.target.dataset.color;
@@ -87,33 +91,66 @@ function onColorClick(event){
     color.value = colorValue;
 }
 
-function onModeClick(){
-    if(isFilling){
+function onModeClick() {
+    if (isFilling) {
         isFilling = false
         modeBtn.innerText = "Fill";
-    } else{
+    } else {
         isFilling = true
         modeBtn.innerText = "Draw";
     }
 }
 
-function onCanvasClick(){
-    if(isFilling){
+function onCanvasClick() {
+    if (isFilling) {
         ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     }
 }
 
-function onDestroyClick(){
+function onDestroyClick() {
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 }
 
-function onEraserClick(){
+function onEraserClick() {
     ctx.strokeStyle = "white";
     isFilling = false
     modeBtn.innerText = "Fill";
 }
 
+function onFileChange(event) {
+    // console.dir(event.target);
+    const file = event.target.files[0];
+    const url = URL.createObjectURL(file);
+    // console.log(url);
+    const image = new Image(); // <img src=""/>
+    image.src = url;
+    image.onload = function () {
+        ctx.drawImage(image, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        fileInput.value = null; // '선택된 파일 없음' 문구로 표시되게 만듦
+    }
+}
+
+function onDoubleClick(event) {
+    const text = textInput.value;
+    if (text !== "") {
+        ctx.save();
+        ctx.lineWidth = 1;
+        ctx.font = "48px serif";
+        ctx.fillText(text, event.offsetX, event.offsetY);
+        ctx.restore();
+    }
+}
+
+function onSaveClick(){
+    const url = canvas.toDataURL(); // <a href="">
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "myDrawing.png";
+    a.click();
+}
+
+canvas.addEventListener("dblclick", onDoubleClick);
 canvas.addEventListener("mousemove", onMove);
 canvas.addEventListener("mousedown", startPainting);
 canvas.addEventListener("mouseup", cancelPainting);
@@ -130,3 +167,5 @@ colorOptions.forEach((color_a) => color_a.addEventListener("click", onColorClick
 modeBtn.addEventListener("click", onModeClick);
 destoryBtn.addEventListener("click", onDestroyClick);
 eraserBtn.addEventListener("click", onEraserClick);
+fileInput.addEventListener("change", onFileChange);
+saveBtn.addEventListener("click", onSaveClick);
