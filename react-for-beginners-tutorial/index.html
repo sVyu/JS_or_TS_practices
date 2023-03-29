@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+    <body>
+        <div id="root"></div>
+    </body>
+    <!-- <script src="https://unpkg.com/react@17.0.2/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script> -->
+    <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/prop-types@15.7.2/prop-types.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        // function Btn(props){
+        function Btn({ text, fontSize=14, onClick }){
+            // console.log(props)
+            console.log(text, "was rendered");
+            return(
+                <button 
+                    /*onClick={changeValue}*/
+                    onClick={onClick}
+                    style={{
+                        backgroundColor:"tomato",
+                        color:"white",
+                        padding:"10px 20px",
+                        border:0,
+                        borderRadius:10,
+                        // fontSize: big? 30: 16,
+                        fontSize: fontSize
+                }}>
+                {text}
+                </button>
+            );
+        }
+    
+        // const MemorizedBtn = React.memo(Btn)
+        Btn.propTypes ={
+            text: PropTypes.string.isRequired,
+            fontSize: PropTypes.number,
+        } 
+        function App(){
+            const [value, setValue] = React.useState("Save Changes");
+            const changeValue = () => setValue("Revert Changes");
+            
+            return(
+                <div>
+                    <Btn text={value} fontSize={20} onClick={changeValue} />
+                    <Btn text={"Continue"}/>
+                    {/*<Btn text={14} fontSize={"Continue"} />*/}
+
+                    {/*<MemorizedBtn text={value} onClick={changeValue} />
+                    <MemorizedBtn text="Continue" />*/}
+                </div>
+            );
+
+            // return(
+            //     <div>
+            //         <Btn banana="banana" big={true}/>
+            //         <Btn banana="vanilla"/>
+            //         <Btn banana="vanilla" big={false}/>
+            //     </div>
+            // );
+        }
+        const root = document.getElementById("root");
+        ReactDOM.render(<App />, root);
+
+    </script>
+</html>
