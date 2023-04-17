@@ -15,12 +15,13 @@
     const $input = document.querySelector('#input');
     const $form = document.querySelector('#form');
     const $logs = document.querySelector('#logs');
+    let outCount = 0;
 
     const numbers = [];
     for (let n = 0; n < 9; n++) {
       numbers.push(n + 1);
     }
-    const answer = [];
+    const answer = [];  // 3,1,4,6
     for (let n = 0; n <= 3; n++) {
       const index = Math.floor(Math.random() * (numbers.length));
       answer.push(numbers[index]);
@@ -28,6 +29,83 @@
     };
     console.log(numbers);
     console.log(answer);
+
+    function defeated() {
+      const message = document.createTextNode(`패배! 정답은 ${answer.join('')}`);
+      $logs.appendChild(message);
+    }
+
+    const tries = [];
+    function checkInput(input) {
+      if (input.length !== 4) {
+        return alert('4자리 숫자를 입력해 주세요.');
+      }
+      if (new Set(input).size !== 4) {
+        return alert('중복되지 않게 입력해 주세요.');
+      }
+      if (tries.includes(input)) {
+        return alert('이미 시도한 값입니다.');
+      }
+      return true;
+    } // 검사하는 코드
+
+    function valueCheck() {
+      // event.preventDefault(); // 기본 동작 막기
+      const value = $input.value; // event.target.value 해도 됨
+      $input.value = '';      // 다음 값 편히 입력하라고 지워준다
+      // value 검사하는 코드
+      if (!checkInput(value)) {
+        // 입력값 문제 없음
+        return;
+      }
+
+      // 입력값 문제없음
+      if (answer.join('') === value) { // [3, 1, 4, 6] -> '3146'
+        // $logs.textContent = '홈런!';
+        $logs.append(`${value}: 홈런!`);
+        return;
+      }
+      if (tries.length >= 9) {
+        defeated();
+        return;
+      }
+
+      let strike = 0;
+      let ball = 0;
+      // answer: 3146,  value: 1347
+      for (let i = 0; i < answer.length; i++) {
+        const index = value.indexOf(answer[i]);
+        if (index > -1) { // 일치하는 숫자 발견
+          if (index === i) { // 자릿수도 같음
+            strike += 1;
+          } else { // 숫자만 같음
+            ball += 1;
+          }
+        }
+      }
+      if (strike + ball === 0) {
+        $logs.append(`${value}: ${outCount} Out !!`, document.createElement('br'));
+        outCount += 1;
+        if (outCount >= 3) {
+          $logs.append('삼진 OUT !! Game Set !!', document.createElement('br'));
+          defeated();
+          $form.removeEventListener('submit', valueCheck);
+        }
+        return;
+      }
+      $logs.append(`${value}: ${strike} 스트라이크 ${ball} 볼`, document.createElement('br'));
+
+      // console.log('서브밋', event);
+      // tries.push(input);
+      tries.push(value);
+      console.log(tries);
+    }
+
+    $form.addEventListener('submit', (event) => {
+      event.preventDefault();
+    })
+    $form.addEventListener('submit',  valueCheck);
+
   </script>
 </body>
 
