@@ -46,7 +46,8 @@ exports.login = (req, res, next) => {
     })(req, res, next);
 };
 
-exports.logout = (req, res, next) => {
+// exports.logout = (req, res, next) => {
+exports.logout = (req, res) => {
     // 세션에 들어있던 세션 쿠키랑 user.id의 연결을 없앤다
     // {} 브라우저의 connect.sid가 남아있어도 세션 쿠키가 비어있어서 연결 안 됨
     req.logout(() => {

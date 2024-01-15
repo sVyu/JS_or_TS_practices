@@ -19,7 +19,7 @@ const basename = path.basename(__filename);
 fs.readdirSync(__dirname)
   .filter(file => {
     // 숨김파일 및 index.js 제외하고, js 파일만 처리하게끔 처리
-    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
+    return (file.indexOf('.') !== 0) && !file.includes('test') && (file !== basename) && (file.slice(-3) === '.js');
   })
   .forEach((file) => {
     const model = require(path.join(__dirname, file));

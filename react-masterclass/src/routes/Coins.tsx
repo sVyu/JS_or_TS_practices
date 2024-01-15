@@ -19,11 +19,13 @@ const Header = styled.header`
 const CoinsList = styled.ul``;
 
 const Coin = styled.li`
-  background-color: white;
-  color: ${props => props.theme.bgColor};
+  background-color: ${(props) => props.theme.cardBgColor};
+  /* color: ${props => props.theme.bgColor}; */
+  color: ${props => props.theme.textColor};
 
   border-radius: 15px;
   margin-bottom: 10px;
+  border: 1px solid white;
   a{
     transition: color 0.25s ease-in;
     padding: 20px;

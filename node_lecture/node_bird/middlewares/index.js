@@ -1,12 +1,14 @@
 exports.isLoggedIn = (req, res, next) => {
+    console.log("isLoggedIn", req)
     if (req.isAuthenticated()) {   // 패스포트 통해서 로그인 check
         next();
     } else {
-        req.status(403).send('로그인 필요');
+        res.status(403).send('로그인 필요');
     }
 };
 
 exports.isNotLoggedIn = (req, res, next) => {
+    console.log("isNotLoggedIn", req)
     if (!req.isAuthenticated()) {
         next();
     } else {
